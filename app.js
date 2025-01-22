@@ -2,6 +2,8 @@ const express=require('express');
 const app=express();
 const productRouter=require('./api/v1/routes/product');
 const categoryRouter=require('./api/v1/routes/category');
+const userRouter=require('./api/v1/routes/user');
+
 const morgan=require('morgan');
 const mongoose=require('mongoose');
 app.use(express.json());
@@ -16,6 +18,7 @@ mongoose.connect(mongoConnstr).then(()=>{
 
 app.use('/product',productRouter);
 app.use('/category',categoryRouter);
+app.use('/user',userRouter);
 
 app.all('*',(req,res)=>{
     return res.status(404).json({Msg:`Not Found 404`});
