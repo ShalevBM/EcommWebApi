@@ -21,21 +21,30 @@ router.post('/login',(req,res)=>{
     
 });
 
-router.post('/signup',(req,res)=>{
-    //נקבל את פרטי המשתמש לרישום, נצפין את הסיסמה, נשמור את פרטי המשתמש בבסיס הנתונים
-    const{userName,pass,fullName}=req.body;
-    const rounds=10;//סבבי הצפנה
-    bcrypt.hash(pass,rounds,(err,hashString)=>{
-        if(err)
-        {
-            return res.status(500).json({msg:err.message});
+// נקודת קצה עבור הרשמה
+router.post('/signup', (req, res) => {
+    const saltRounds = 10; // מספר סבבים ליצירת ה-Salt
+    const { userName, pass, fullName } = req.body;
+
+    // בדוק אם שם המשתמש כבר קיים
+    userModel.findOne({ userName }).then((existingUser) => {
+        if (existingUser) {
+            return res.status(400).json({ msg: 'Username already exists' });
         }
-        else
-        {
-            userModel.insertMany([{userName,pass:hashString,fullName}]).then((data)=>{
-                return res.status(200).json(data);
-            });
-        }
+
+        bcrypt.hash(pass, saltRounds, (err, hash) => {
+            if (err) {
+                return res.status(500).json({ msg: err.message });
+            } else {
+                userModel.insertMany([{ userName, pass: hash, fullName }]).then((data) => {
+                    return res.status(200).json(data);
+                }).catch((err) => {
+                    return res.status(500).json({ msg: 'Error saving user', error: err.message });
+                });
+            }
+        });
+    }).catch((err) => {
+        return res.status(500).json({ msg: 'Server error', error: err.message });
     });
 });
 
