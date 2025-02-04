@@ -1,21 +1,19 @@
+require('dotenv').config();
 const jwt=require('jsonwebtoken');
 
 
-
-const Privatekey="shalevbenmoshe"
-const token=jwt.sign({userName:"shalevbm1@gmail.com"},"Privatekey",{expiresIn:'1h'});
+const privateKey=process.env.PRIVATE_KEY
+const token=jwt.sign({userName:"shalevbm1@gmail.com"},privateKey,{expiresIn:'1h'});
 console.log(token);
-    const authMiddle=(req,res,next)=>{
-        try
-        {
-        const authString=req.headers.authorization;
-        const arr=authString.split(' ');
-        const token=arr[1]; 
-        const obj=jwt.verify(token,Privatekey);
-         next(); 
-        }
-        catch(err)
-        {
-             return res.status(500).json({msg:err.message});
-        }     
-};
+const fakekey="123465";
+
+
+try
+{
+const obj=jwt.verify(token,privateKey);
+console.log(obj);
+}
+catch(err)
+{
+  console.log(err.message);
+}

@@ -10,6 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(morgan('dev'));
 
+
 const secure=require('./api/v1/middlewares/secure');
 const mongoConnstr=`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@ecom.r9vhn.mongodb.net/WebApi2025`;
 mongoose.connect(mongoConnstr).then(()=>{
