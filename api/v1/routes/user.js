@@ -24,7 +24,7 @@ const jwt=require('jsonwebtoken');
     });
 });
 */
-
+const privateKey=process.env.PRIVATE_KEY
 router.post('/login',(req,res)=>{
     const{userName,pass}=req.body;
     userModel.find({userName}).then((data)=>{
@@ -36,7 +36,7 @@ router.post('/login',(req,res)=>{
         bcrypt.compare(pass,hashPass,).then((ans)=>{
             if(ans)
             {
-                const token=jwt.sign({userName},"132465");
+                const token=jwt.sign({userName},privateKey,{expiresIn:'1h'});
                 return res.status(200).json({msg:"login succefully",token});
             }
             else
